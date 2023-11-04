@@ -1,18 +1,47 @@
 const main = document.querySelector("#main");
-const rest = document.querySelector(".rest");
+const studentAreaWithoutGroups = document.querySelector(
+  ".student__Area__Without__Groups"
+);
 const modal = document.querySelector(".modal");
-const openModal = document.querySelector("#open__Modal");
-const closeModal = document.querySelector("#close__Modal");
+const btnToggleTheme = document.getElementById("btn__Toggle__Theme");
+const buttonsModal = Array.from(
+  document.querySelectorAll(".btn__toggle__modal__state")
+);
+const icon = document.querySelector(".icon");
 
-openModal.addEventListener("click", () => {
+//FUNÇÃO PARA MUDAR O ESTADO DO MODAL
+const toggleModalState = () => {
   modal.classList.toggle("active");
+};
+
+buttonsModal.map((button) => {
+  button.addEventListener("click", toggleModalState);
 });
 
-closeModal.addEventListener("click", () => {
-  modal.classList.toggle("active");
-});
+//FUNÇÃO PARA ALTERAR O TEMA
+const toggleTheme = () => {
+  document.body.classList.toggle("dark");
 
-const ESTUDANTES = [
+  let iconType = {
+    moon: "./img/moon.svg",
+    sun: "./img/sun-dim.svg",
+  };
+
+  let { moon, sun } = iconType;
+
+  let isDarkMood = icon.getAttribute("src") == moon;
+
+  if (isDarkMood) {
+    return icon.setAttribute("src", sun);
+  }
+  return icon.setAttribute("src", moon);
+};
+
+btnToggleTheme.addEventListener("click", toggleTheme);
+
+
+//LISTA DOS ESTUDANTES
+const STUDENTS = [
   { id: 0, name: "Agostinho Cambriz" },
   { id: 1, name: "Catarino Ribeiro" },
   { id: 2, name: "Adilson Miguel" },
@@ -62,40 +91,59 @@ const GROUPS = {
   F: [],
 };
 
+//GERANDO ESTUDANTES ALEATÓRIOS
 for (let i = 0; i < 6; i++) {
   for (const groupName in GROUPS) {
     if (GROUPS[groupName].length < 6) {
-      const randomNumber = Math.floor(Math.random() * ESTUDANTES.length);
-      GROUPS[groupName].push(ESTUDANTES[randomNumber]);
-      ESTUDANTES.splice(randomNumber, 1);
+      const randomNumber = Math.floor(Math.random() * STUDENTS.length);
+      GROUPS[groupName].push(STUDENTS[randomNumber]);
+      STUDENTS.splice(randomNumber, 1);
     }
   }
 }
 
-for (const groupName in GROUPS) {
-  console.log(groupName);
-  let divGroup = document.createElement("nav");
-  divGroup.className = "group";
+//FUNÇÃO PARA GERAR GRUPOS DE ESTUDANTES
+const generateGroup = (groupName) => {
+  let groupCreated = document.createElement("nav");
+  groupCreated.className = "group";
 
   let group = document.createElement("h2");
   group.textContent = "Grupo ".concat(groupName);
 
-  divGroup.appendChild(group);
+  groupCreated.appendChild(group);
 
-  GROUPS[groupName].forEach((estudante) => {
-    console.log(estudante);
-    let aluno = document.createElement("li");
-    aluno.textContent = estudante.name;
+  return groupCreated;
+};
 
-    divGroup.appendChild(aluno);
+//FUNÇÃO PARA GERAR ESTUDANTES
+const generateStudent = (studant) => {
+  let createdStudent = document.createElement("li");
+  createdStudent.textContent = studant.name;
 
-    main.appendChild(divGroup);
+  return createdStudent;
+};
+
+//REPRESENTAÇÃO DOS GRUPOS GERADOS
+for (const groupName in GROUPS) {
+  let groupCreated = generateGroup(groupName);
+
+  GROUPS[groupName].forEach((student) => {
+    let newStudent = generateStudent(student);
+
+    groupCreated.appendChild(newStudent);
+
+    main.appendChild(groupCreated);
   });
 }
 
-ESTUDANTES.forEach((estudante) => {
-  let aluno = document.createElement("li");
-  aluno.textContent = estudante.name;
+//REPRESENTAÇÃO DOS ESTUDANTES SEM GRUPO
+const listStudentsWithoutGroup = () => {
+  STUDENTS.forEach((estudante) => {
+    let student = document.createElement("li");
+    student.textContent = estudante.name;
 
-  rest.appendChild(aluno);
-});
+    studentAreaWithoutGroups.appendChild(student);
+  });
+};
+
+listStudentsWithoutGroup();
