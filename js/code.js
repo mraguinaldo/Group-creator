@@ -21,7 +21,10 @@ buttonsModal.map((button) => {
 //FUNÇÃO PARA ALTERAR O TEMA
 const toggleTheme = () => {
   document.body.classList.toggle("dark");
+  toggleIcon()
+};
 
+const toggleIcon = () => {
   const iconType = {
     moon: "./img/moon.svg",
     sun: "./img/sun-dim.svg",
@@ -35,7 +38,7 @@ const toggleTheme = () => {
     return icon.setAttribute("src", sun);
   }
   return icon.setAttribute("src", moon);
-};
+}
 
 btnToggleTheme.addEventListener("click", toggleTheme);
 
